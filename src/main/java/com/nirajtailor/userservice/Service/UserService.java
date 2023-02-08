@@ -25,6 +25,11 @@ public class UserService {
         return new Response<>(createdUser, HttpStatus.CREATED);
     }
 
+    public Response updateUser(Long id, User user) {
+        User createdUser = userRepository.updateUser(id, user);
+        return new Response<>(createdUser, HttpStatus.CREATED);
+    }
+
     public Response createUsers(List<User> users) {
         int row = userRepository.createUsers(users);
         return new Response<>(row, HttpStatus.CREATED);

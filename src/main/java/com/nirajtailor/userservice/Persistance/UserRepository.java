@@ -2,6 +2,7 @@ package com.nirajtailor.userservice.Persistance;
 
 import com.nirajtailor.userservice.Models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -21,7 +22,12 @@ import java.util.List;
 @Repository
 public class UserRepository {
     @Autowired
+    @Qualifier("firstJdbcTemplate")
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    @Qualifier("secondJdbcTemplate")
+    private JdbcTemplate secondtJdbcTemplate;
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -109,9 +115,20 @@ public class UserRepository {
         int r = namedParameterJdbcTemplate.update(sql, parameters, generatedKeyHolder);
 
         if(!CollectionUtils.isEmpty(generatedKeyHolder.getKeys())){
-            Long userId = (Long) generatedKeyHolder.getKeys().get("GENERATED_KEY");
+            Long userId = Long.parseLong(String.valueOf(generatedKeyHolder.getKeys().get("GENERATED_KEY")));
             user.setId(userId);
         }
+        return user;
+    }
+
+    public User updateUser(Long id, User user) {
+        String sql = "UPDATE user SET name = :name "
+                + " where id = :id";
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("id", id);
+        parameters.addValue("name", user.getName());
+        int r = namedParameterJdbcTemplate.update(sql, parameters);
+        user.setId(id);
         return user;
     }
 

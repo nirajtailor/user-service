@@ -41,6 +41,18 @@ public class UserController {
         return new ResponseEntity<>(response.getBody(), response.getStatus());
     }
 
+    @RequestMapping(value = "/user/{id}",
+            method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> updateUser(
+            @PathVariable(value = "id") Long userId,
+            @RequestBody User user
+    ){
+        Response response = userService.updateUser(userId, user);
+        return new ResponseEntity<>(response.getBody(), response.getStatus());
+    }
+
 
     @RequestMapping(value = "/users",
             method = RequestMethod.POST,
